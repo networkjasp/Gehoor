@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Management Portal – Gehoor in die Moot</title>
+<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+.preview-strip{background:#88CC48;color:#0F2E66;font:700 14px/1.4 'Nunito Sans',system-ui,sans-serif;text-align:center;padding:8px max(16px,env(safe-area-inset-left,0px));}
+.preview-strip a{color:#0F2E66}
+.shots{display:flex;flex-direction:column;gap:48px}
+.shot{display:flex;flex-wrap:wrap;gap:24px 40px;align-items:flex-start}
+.shot-text{flex:1 1 260px;min-width:0}
+.shot-img{flex:999 1 560px;min-width:0}
+.shot-img img{border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow);width:100%}
+</style>
+</head>
+<body>
+<div class="preview-strip">Live preview. This page shows the portal; it opens from the © in the footer once the site is installed. <a href="index.html">Back to the website</a></div>
+<section class="page-hero">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> › <span aria-current="page">Management portal</span></nav>
+    <p class="eyebrow">Built into the website</p>
+    <h1>Management portal</h1>
+    <p class="lead">Click the © at the bottom of any page and log in. From there you manage the team, every photo, the newsletters and the messages, with nothing else to install.</p>
+  </div>
+</section>
+<section class="section" style="padding-top:16px">
+  <div class="wrap shots">
+    <div class="shot"><div class="shot-text"><h2>Secure login</h2><p class="muted">The password is stored scrambled (hashed). After 5 wrong attempts, logins are paused for 15 minutes, and you're logged out after 30 minutes of inactivity.</p></div><div class="shot-img"><img src="portal/10-portal-login.jpg" alt="Portal login screen" loading="lazy"></div></div>
+    <div class="shot"><div class="shot-text"><h2>Dashboard</h2><p class="muted">Unread messages, the team, newsletters and photos at a glance, plus quick links to common tasks.</p></div><div class="shot-img"><img src="portal/11-portal-dashboard.jpg" alt="Portal dashboard" loading="lazy"></div></div>
+    <div class="shot"><div class="shot-text"><h2>Team</h2><p class="muted">Add, edit, hide, reorder or remove people. Upload a photo and add qualifications and HPCSA numbers. Changes show straight away on About us and the homepage.</p></div><div class="shot-img"><img src="portal/12-portal-team.jpg" alt="Team list in the portal" loading="lazy"><img src="portal/12b-portal-team-edit.jpg" alt="Editing a team member" loading="lazy" style="margin-top:16px"></div></div>
+    <div class="shot"><div class="shot-text"><h2>Images</h2><p class="muted">Every photo and logo on the site, grouped by page, including the "Member of" logos. Upload a replacement and add a description. Images are resized and optimised automatically.</p></div><div class="shot-img"><img src="portal/14-portal-images.jpg" alt="Image manager in the portal" loading="lazy"></div></div>
+    <div class="shot"><div class="shot-text"><h2>Newsletters</h2><p class="muted">Upload a PDF and give it a title. Every page becomes an image on the branded newsletter page, the PDF stays available to download, and the text is indexed for Google. <a href="newsletters.html">See the example</a>.</p></div><div class="shot-img"><img src="portal/13-portal-newsletters.jpg" alt="Newsletter upload in the portal" loading="lazy"></div></div>
+    <div class="shot"><div class="shot-text"><h2>SEO &amp; sharing</h2><p class="muted">Edit the Google title and description of every page, with live character counters and a preview of the Google result and of the card shown when someone shares the page on WhatsApp or Facebook.</p></div><div class="shot-img"><img src="portal/15-portal-seo.jpg" alt="SEO and social sharing editor" loading="lazy"></div></div>
+    <div class="shot"><div class="shot-text"><h2>Settings</h2><p class="muted">Contact details, the Information Officer, Google Analytics and Search Console, optional Cloudflare Turnstile spam check, and your login. Secret keys are stored on the server and never shown again.</p></div><div class="shot-img"><img src="portal/17-portal-settings.jpg" alt="Portal settings" loading="lazy"></div></div>
+  </div>
+</section>
+<footer class="site-footer"><div class="wrap footer-bottom"><span>© Dr René Hornby Inc.</span><a href="index.html">Back to the website</a></div></footer>
+<script src="assets/js/site.js"></script>
+</body>
+</html>
