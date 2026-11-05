@@ -1,96 +1,104 @@
-# Gehoor in die Moot – website
+# Gehoor in die Moot – website (Netlify)
 
-A complete website with a built-in management portal. It runs on PHP and needs no database.
+The website and management portal for Gehoor in die Moot, built to run on **Netlify**. The files live on **GitHub**, and every change saved on GitHub is deployed by Netlify automatically.
 
-**Everything is in this one folder:**
+- **Pages** are created by Netlify Functions and cached on Netlify's CDN, so they load fast everywhere.
+- **Portal content** (team, photos, newsletters, page titles, settings) is stored in **Netlify Blobs**, Netlify's built-in storage. It needs no setup and is never stored in GitHub.
+- **Contact form** messages go through **Netlify Forms**, which emails each one to the practice and filters spam.
 
-- the website itself (everything except `docs/`), ready for your hosting;
-- `docs/preview/`, a clickable preview you can view on GitHub Pages;
-- `docs/screenshots/`, screenshots of every page and portal screen.
+## 1. Put the files on GitHub
 
-## View it live on GitHub
+See `UPLOAD-TO-GITHUB.md`. In short: create a **private** repository, then upload everything in this folder.
 
-After uploading, go to *Settings › Pages*. Choose *Deploy from a branch*, then branch `main` and folder `/docs`, and save. After a minute the preview is live at `https://YOUR-USERNAME.github.io/REPOSITORY-NAME/`.
+## 2. Connect GitHub to Netlify (one time)
 
-The preview is a static copy. The contact form, the portal and the Google Maps work only on your real hosting.
+1. Log in at app.netlify.com and choose **Add new project › Import an existing project › GitHub**. Then pick your repository.
+2. Netlify reads `netlify.toml` and fills in the build settings itself (publish folder `public`, functions folder `netlify/functions`). Don't change anything.
+3. Click **Deploy**. After about a minute, the site is live on a `*.netlify.app` address. No environment variables are needed.
 
-## First login
+## 3. Turn on the contact form emails (one time)
 
-For security, the portal password is not stored in this folder. The first time you install the site, do one of the following:
+1. In Netlify open **Forms**. The form called **contact** appears after the first deploy. If Netlify asks, click **Enable form detection** and redeploy once.
+2. Open **Project configuration › Notifications › Emails and webhooks › Form submission notifications**. Add an **Email notification** to `admin@gehoorindiemoot.co.za` for the form `contact`.
+3. Send yourself a test message from the Contact page.
 
-- **Deploying from GitHub:** add a repository secret named `ADMIN_PASSWORD_HASH`, containing your password hash (see below). The deploy workflow creates `inc/config.php` on the server for you.
-- **Uploading by hand:** copy `inc/config.sample.php` to `inc/config.php` on the server and paste the hash into it.
+Spam protection: a hidden honeypot field, a minimum time to fill in the form and a links filter run in the visitor's browser. Netlify's own spam filter (Akismet) runs on every submission.
 
-To make a hash for a password, run `php -r "echo password_hash('YourPassword', PASSWORD_DEFAULT), PHP_EOL;"` on any computer with PHP. Your host's support can also do this for you. Change the password in *Portal › Settings* after your first login.
+## 4. Your domain
 
-## What you need
+In Netlify open **Domain management**. Add `gehoorindiemoot.co.za` and set it as the **primary domain**, then follow Netlify's DNS instructions. You can also add `rhearing.co.za` as a domain alias so it forwards to the main domain. Netlify issues the free SSL certificate and forces HTTPS automatically. Old WordPress addresses, like `/about/` and `/tinnitus-en-hyperacusis/`, redirect to the new pages.
 
-- Any standard South African web host with **PHP 8.1 or newer** and the GD extension. This is the same hosting your WordPress site uses, for example Afrihost, xneelo or Domains.co.za.
-- Apache hosting, where the included `.htaccess` files take care of web addresses, HTTPS and security. On Nginx, ask your host to block the `data/` and `inc/` folders and to send unknown addresses to `index.php`. The site forces HTTPS from PHP as well, so it stays secure either way.
+## 5. First login
 
-## Installing
+Click the **©** at the bottom of any page, or go to `/admin/`. Log in with username `Admin` and the starting password the practice was given. The login is built in, so there's nothing to set up.
 
-1. **Back up the current WordPress site** in your hosting control panel.
-2. Upload everything **except `docs/`** to your website's root folder (usually `public_html`), including the hidden files `.htaccess` and `.user.ini`.
-3. **Login details:** see *First login* above.
-4. Make sure `data/` and `uploads/` are **writable** (permissions 755, or 775 if your host asks for it).
-5. Make sure the domain has an **SSL certificate**. Most hosts include a free Let's Encrypt certificate. Every visit is then redirected to `https://`.
-6. Click the **©** at the bottom of any page to open the portal. Log in, then **change the password** under *Settings*.
-7. In *Settings*, add your WhatsApp number and Information Officer. Under *Analytics & spam protection*, add your Google Analytics ID.
-8. Send a test message through the Contact page and check that it arrives at admin@gehoorindiemoot.co.za.
+**Change the password straight after your first login** (*Portal › Settings*). Only a scrambled (hashed) form of the starting password is in the code, but anyone who can see the GitHub repository can see that hash, so:
+
+- keep the GitHub repository **private**;
+- change the password on day one. The new password is stored by Netlify, not in GitHub, and the built-in one stops working.
+
+### Resetting a forgotten password
+
+Set an environment variable `ADMIN_PASSWORD_HASH` in Netlify containing a new hash, then redeploy. To reset after a password change, also delete the `auth` entry in Netlify's Blobs storage (*Blobs › gidm-content*). To make a hash, use one of these; each produces a value starting with `$2`:
+
+- **With Node.js:** inside this folder, after `npm install`, run `node -e "console.log(require('bcryptjs').hashSync('YourPassword', 12))"`.
+- **With PHP:** run `php -r "echo password_hash('YourPassword', PASSWORD_DEFAULT), PHP_EOL;"`.
+
+The hash can't be turned back into the password, but keep it private all the same. Never put the password itself anywhere in these files.
+
+## Optional settings
+
+| Environment variable | What it does |
+|---|---|
+| `NETLIFY_API_TOKEN` | Shows contact-form messages inside the portal, in **Messages**. Create one in Netlify under **User settings › Applications › Personal access tokens**. Without it, the portal links to the messages in Netlify instead. |
+| `SESSION_SECRET` | Optional: a random string of at least 32 characters used to sign portal logins. If it's missing, one is created and stored automatically. |
+| `ADMIN_PASSWORD_HASH` | Optional: replaces the built-in starting password (see *Resetting a forgotten password*). |
+| `ADMIN_USER` | A different starting username. The default is `Admin`. |
+
+Google Analytics, Search Console, WhatsApp, phone numbers and similar details are set in **Portal › Settings**.
 
 ## What's built in
 
-| Area | Details |
-|---|---|
-| Legal | Privacy policy (POPIA, including a cookie table) and Terms & conditions (including the ECT Act section 43 disclosures). Both are templates: have them checked by your compliance adviser. |
-| Cookie consent | A banner offers "Accept all" or "Essential only". Google Analytics and Google Maps load only after consent. "Cookie settings" in the footer lets visitors change their choice. |
-| Analytics | Google Analytics 4, turned on in the portal. It tracks page views, appointment-button clicks, phone, email and WhatsApp clicks, contact form sends (as leads), and completed hearing checks. |
-| SEO | A unique title (under 60 characters) and description (under 155) on every page, all editable in *Portal › SEO & sharing* with live Google and social previews. It also has structured data (MedicalClinic, FAQ, Breadcrumb, Article), canonical links, an automatic `sitemap.xml`, `robots.txt`, and 301 redirects from the old WordPress addresses. |
-| Social sharing | A branded 1200×630 share image for every page, plus Open Graph and Twitter tags. You can upload your own share image in *Images*. |
-| Icons | `favicon.ico`, a PNG favicon, an Apple touch icon, Android icons and `site.webmanifest`. |
-| Speed | Self-hosted fonts, compressed logos, uploads automatically resized and saved as WebP, and lazy-loaded images. Lighthouse scores 99–100 for performance on mobile and desktop. |
-| Accessibility | WCAG 2.2 AA colour contrast, a high-contrast mode and text-size buttons, alt text required on uploads, keyboard-friendly navigation, and 44 px touch targets. |
-| Forms | Instant on-page validation with clear messages, checked again on the server. Spam protection uses a hidden honeypot field, a minimum fill time, rate limiting, link and keyword filters, duplicate blocking and optional Cloudflare Turnstile. |
-| Errors | A custom 404 page with links to popular pages. |
+- **Pages:** Home, Services, About us, Hearing aids, Babies & children, Medical aid, Newsletters, Contact, Privacy policy (POPIA) and Terms & conditions, plus a custom 404 page.
+- **Portal:**
+  - Team: photos, qualifications and HPCSA numbers.
+  - Images: every photo and logo on the site, with alt text required.
+  - Newsletters: upload a PDF, and each page becomes an image on the branded newsletter page. The PDF stays downloadable and its text is indexed.
+  - SEO & sharing: edit page titles and descriptions, with Google and social previews.
+  - Messages and Settings, including password change.
+  - Every change is live within seconds, because the CDN cache is cleared automatically.
+- **SEO:**
+  - Unique titles and descriptions for every page.
+  - Structured data (MedicalClinic, FAQ, Breadcrumb, Article) and canonical links.
+  - An automatic `/sitemap.xml` and `/robots.txt`, plus branded 1200×630 share images.
+- **Privacy:** a cookie consent banner. Google Analytics and Google Maps load only after the visitor accepts.
+- **Security:**
+  - HTTPS with HSTS, plus security headers and a Content Security Policy.
+  - Logins limited to 5 attempts per 15 minutes and automatic logout after 30 minutes.
+  - Protection against cross-site requests.
+  - Uploads are checked by their actual file contents, not the file name, and served from a sandbox.
+  - No plain-text passwords in the code: only the hash of the starting password, which is replaced at the first password change.
+- **Accessibility and speed:** WCAG 2.2 AA contrast, a high-contrast mode and text size buttons, and self-hosted fonts. Images are compressed to WebP in the browser before upload. Lighthouse scores 99–100.
 
-## Security
-
-- **No secrets in the browser or in Git.** The admin password exists only as a bcrypt hash: first in `inc/config.php` (blocked from the web and excluded from Git), then in the `data/` folder. The Turnstile secret key is kept server-side and never shown again after you save it. The Google Analytics and Turnstile *site* keys are public by design.
-- HTTPS is forced by `.htaccess` and by PHP, with HSTS.
-- Logins are limited to 5 failed attempts per 15 minutes. You're logged out after 30 minutes of inactivity. Every portal form has a security token (CSRF protection).
-- Uploads are checked and re-saved, which strips hidden content, and uploaded files can never run as code.
-
-## Email delivery
-
-The contact form uses your host's built-in mail sender. To keep messages out of spam, create the mailbox `website@gehoorindiemoot.co.za` (or ask your host to allow sending from it), and check that the domain's SPF record includes your host. Every message is also saved in *Portal › Messages*.
-
-## GitHub
-
-1. Create a new **private** repository on github.com. Don't add a README.
-2. In this folder, run `git remote add origin https://github.com/YOUR-USERNAME/gehoor-website.git`, then `git push -u origin main`. Or use GitHub Desktop: *Add local repository*, then *Publish*.
-3. Every push runs *Check PHP*, which tests that every page loads.
-4. To deploy from GitHub, add the FTP secrets listed in `.github/workflows/deploy.yml` (plus `ADMIN_PASSWORD_HASH` for the first install). Then use *Actions › Deploy to hosting › Run workflow*. Deploying never overwrites portal content on the server, and `docs/` is never uploaded.
-
-The portal data never goes into Git: team details, messages, login hashes and uploaded photos and newsletters stay on the server.
-
-## Domain
-
-Once `gehoorindiemoot.co.za` points at this site, uncomment the "one domain" lines in `.htaccess`, so `rhearing.co.za` redirects to it. Then submit `https://gehoorindiemoot.co.za/sitemap.xml` in Google Search Console, and claim a Google Business Profile for each practice.
-
-## Files
+## Folder map
 
 ```
-index.php            page router and redirects
-robots.php           robots.txt (automatic)
-sitemap.php          sitemap.xml (automatic, includes newsletters)
-site.webmanifest     app icons for phones
-inc/                 layout, pages, SEO and config (blocked from the web)
-admin/               management portal (pdf.js included)
-assets/              styles, scripts, fonts, logos and share images
-data/                portal data (blocked from the web, not in Git)
-uploads/             uploaded photos and newsletters (not in Git)
-docs/                preview and screenshots for GitHub (never uploaded to hosting)
+netlify.toml              Netlify settings (build, functions, security headers)
+package.json              the three packages the functions use
+public/                   static files: styles, scripts, fonts, logos, share images, portal
+  admin/                  the management portal (opens at /admin/)
+  __forms.html            hidden copy of the contact form so Netlify Forms detects it (don't delete)
+netlify/functions/        site.mjs (pages), api.mjs (portal), media.mjs (uploaded files)
+netlify/lib/              page templates, layout, default content, login, storage
+tools/                    check.mjs (runs on every deploy), dev-server.mjs (local preview)
+docs/screenshots/         screenshots of every page and portal screen
 ```
 
-Licences: Montserrat and Nunito Sans fonts are under the SIL Open Font License; pdf.js is under the Apache 2.0 licence.
+## Local preview (optional, for developers)
+
+```
+npm install
+npm run dev
+```
+
+Then open http://localhost:8888. Content is stored in `.local-store/` and contact-form posts are saved there instead of emailed.
