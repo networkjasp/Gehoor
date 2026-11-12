@@ -46,26 +46,42 @@ export const navItems = [
   ['contact', 'Contact', 'contact/'],
 ];
 
+const CI = '/assets/img/ci/';
+
+/**
+ * Every photo and logo on the site. `def` is the built-in CI image (from the approved mock-up);
+ * an upload in Portal › Images replaces it. `focus` keeps the important part of a photo in view.
+ */
 export const imageSlots = {
-  logo_header: { label: 'Header logo', group: 'Brand', def: '/assets/img/logo-full.png', size: 'Transparent PNG, about 1200×320', decorative: true },
-  logo_footer: { label: 'Footer logo (white)', group: 'Brand', def: '/assets/img/logo-mark-white.png', size: 'White transparent PNG', decorative: true },
-  home_hero: { label: 'Homepage – main photo', group: 'Home', def: '', size: 'Portrait or square, 1200×1300' },
-  member_audiologysa: { label: 'Member of – Audiology SA logo', group: 'Home', def: '', size: 'Transparent PNG, square' },
-  member_ican: { label: 'Member of – iCAN logo', group: 'Home', def: '', size: 'Transparent PNG, square' },
-  services_hero: { label: 'Services – header photo', group: 'Services', def: '', size: 'Landscape, 1600×1000' },
-  service_tests: { label: 'Services – hearing tests', group: 'Services', def: '', size: 'Landscape, 1200×800' },
-  service_tinnitus: { label: 'Services – tinnitus', group: 'Services', def: '', size: 'Landscape, 1200×800' },
-  service_protection: { label: 'Services – ear protection & swim plugs', group: 'Services', def: '', size: 'Landscape, 1200×800' },
-  about_hero: { label: 'About us – team photo', group: 'About us', def: '', size: 'Landscape, 1600×1000' },
-  about_community: { label: 'About us – serving the community', group: 'About us', def: '', size: 'Landscape, 1200×800' },
-  hearingaids_hero: { label: 'Hearing aids – header photo', group: 'Hearing aids', def: '', size: 'Landscape, 1600×1000' },
-  hearingaids_styles: { label: 'Hearing aids – styles photo', group: 'Hearing aids', def: '', size: 'Landscape, 1200×800' },
-  children_hero: { label: 'Babies & children – header photo', group: 'Babies & children', def: '', size: 'Landscape, 1600×1000' },
-  children_newborn: { label: 'Babies & children – newborn screening', group: 'Babies & children', def: '', size: 'Landscape, 1200×800' },
-  medicalaid_hero: { label: 'Medical aid – header photo', group: 'Medical aid', def: '', size: 'Landscape, 1600×1000' },
-  practice_rietfontein: { label: 'Contact – Rietfontein entrance', group: 'Contact', def: '', size: 'Landscape, 1200×800' },
-  practice_lesmarais: { label: 'Contact – Les Marais entrance', group: 'Contact', def: '', size: 'Landscape, 1200×800' },
+  logo_header: { label: 'Header logo', group: 'Brand', def: CI + 'logo-header.png', size: 'Transparent PNG, about 840×240', decorative: true },
+  logo_footer: { label: 'Footer logo (white)', group: 'Brand', def: CI + 'logo-mark-white.png', size: 'White transparent PNG', decorative: true },
+  home_hero: { label: 'Homepage – slideshow photo 1', group: 'Home', def: CI + 'hero-hearing-exam.webp', alt: 'A patient receiving a hearing examination at Gehoor in die Moot', focus: '10% 50%', size: 'Landscape, 1050×700 or larger' },
+  home_hero_2: { label: 'Homepage – slideshow photo 2', group: 'Home', def: CI + 'hero-jacarandas.webp', alt: 'A street lined with blooming jacarandas, from the practice archive', focus: '50% 50%', size: 'Landscape, 1050×700 or larger' },
+  home_hero_3: { label: 'Homepage – slideshow photo 3', group: 'Home', def: CI + 'hero-ear-exam.webp', alt: 'Close-up of an audiologist examining a patient’s ear', focus: '40% 50%', size: 'Landscape, 1050×700 or larger' },
+  home_hero_4: { label: 'Homepage – slideshow photo 4', group: 'Home', def: CI + 'hero-rietfontein-garden.webp', alt: 'Garden and entrance at the Rietfontein practice', focus: '58% 50%', size: 'Landscape, 1050×700 or larger' },
+  member_audiologysa: { label: 'Member of – SAAA logo', group: 'Home', def: CI + 'member-saaa.png', size: 'Logo, transparent PNG', decorative: true },
+  member_ican: { label: 'Member of – iCAN logo', group: 'Home', def: CI + 'member-ican.png', size: 'Logo, transparent PNG', decorative: true },
+  services_hero: { label: 'Services – header photo', group: 'Services', def: CI + 'services-equipment.webp', alt: 'Audiologist operating the hearing test equipment', focus: '43% 49%', size: 'Landscape, 1600×1000' },
+  service_tests: { label: 'Services – hearing tests', group: 'Services', def: CI + 'services-booth.webp', alt: 'Audiologist and patient in the practice hearing test booth', focus: '57% 51%', size: 'Landscape, 1200×800' },
+  service_tinnitus: { label: 'Services – tinnitus', group: 'Services', def: CI + 'services-ear-exam.webp', alt: 'Close-up of an ear examination at the practice', focus: '50% 47%', size: 'Landscape, 1200×800' },
+  service_protection: { label: 'Services – ear protection & swim plugs', group: 'Services', def: CI + 'protec-ear-logo.png', alt: 'Protec-Ear protective ear wear', variant: 'brand', size: 'Landscape, 1200×800' },
+  about_hero: { label: 'About us – team photo (shown once uploaded)', group: 'About us', def: '', size: 'Landscape, 1600×1000' },
+  about_community: { label: 'About us – serving the community', group: 'About us', def: CI + 'community-archive.webp', alt: 'Archive photograph of a child receiving hearing care', focus: '50% 44%', size: 'Landscape, 1200×800' },
+  hearingaids_hero: { label: 'Hearing aids – header photo', group: 'Hearing aids', def: CI + 'hearing-aids-fitting.webp', alt: 'Audiologist adjusting a hearing device during a fitting', focus: '42% 48%', size: 'Landscape, 1600×1000' },
+  hearingaids_styles: { label: 'Hearing aids – styles photo', group: 'Hearing aids', def: CI + 'signia-charger.webp', alt: 'Signia rechargeable hearing aid and charging case', focus: '50% 51%', size: 'Landscape, 1200×800' },
+  children_hero: { label: 'Babies & children – header photo', group: 'Babies & children', def: CI + 'child-hearing-test.webp', alt: 'Child wearing headphones and holding the hearing test response button', focus: '49% 49%', size: 'Landscape, 1600×1000' },
+  children_newborn: { label: 'Babies & children – newborn screening', group: 'Babies & children', def: CI + 'newborn-screening.webp', alt: 'Archive image illustrating a newborn hearing screen', variant: 'newborn', size: 'Landscape, 1200×800' },
+  medicalaid_hero: { label: 'Medical aid – header photo', group: 'Medical aid', def: CI + 'reception.webp', alt: 'Practice reception team assisting a visitor', focus: '47% 35%', size: 'Landscape, 1600×1000' },
+  practice_rietfontein: { label: 'Practice photo – Rietfontein', group: 'Contact', def: CI + 'practice-rietfontein.webp', alt: 'Rietfontein practice entrance with the street number 536 above the gate', focus: '50% 48%', size: 'Landscape, 1200×600' },
+  practice_lesmarais: { label: 'Practice photo – Les Marais', group: 'Contact', def: CI + 'practice-lesmarais.webp', alt: 'Les Marais practice from the street, with its sign beside the entrance', focus: '50% 58%', size: 'Landscape, 1200×600' },
   share_default: { label: 'Social sharing image (optional – replaces the automatic ones)', group: 'SEO & sharing', def: '', size: 'Exactly 1200×630, JPG', decorative: true },
+};
+
+/** Built-in portraits for the starting team (replaced when a photo is uploaded in Portal › Team). */
+export const defaultPortraits = {
+  'rene-hornby': CI + 'team-rene-hornby.webp',
+  'lauren-tee': CI + 'team-lauren-tee.webp',
+  'rozelle-roets': CI + 'team-rozelle-roets.webp',
 };
 
 /** Titles stay under 60 characters and descriptions under 155, so Google shows them in full. */

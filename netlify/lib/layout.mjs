@@ -20,7 +20,7 @@ function schemaOrg() {
     availableLanguage: ['af', 'en'], areaServed: ['Pretoria', 'Moot', 'Rietfontein', 'Les Marais', 'Villieria', 'Queenswood', 'Wonderboom South'],
     address: locations[0].address, openingHours: 'Mo-Fr 08:00-16:30', department: locations,
     employee: aud.map((m) => ({ '@type': 'Person', name: m.name, jobTitle: m.role, ...(m.hpcsa ? { hasCredential: 'HPCSA ' + m.hpcsa } : {}) })),
-    memberOf: [{ '@type': 'Organization', name: 'South African Association of Audiologists' }, { '@type': 'Organization', name: 'iCAN – Independent Community of Audiologists' }],
+    memberOf: [{ '@type': 'Organization', name: 'South African Association of Audiologists' }, { '@type': 'Organization', name: 'iCAN – Independent Connected Audiology Network' }],
   };
   if (sameAs.length) org.sameAs = sameAs;
   return org;
@@ -69,14 +69,14 @@ ${meta.noindex ? '<meta name="robots" content="noindex">\n' : ''}${setting('gsc_
 <meta name="twitter:title" content="${e(title)}">
 <meta name="twitter:description" content="${e(desc)}">
 <meta name="twitter:image" content="${e(image)}">
-<meta name="theme-color" content="#1A4CA1">
+<meta name="theme-color" content="#142949">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/assets/fonts/montserrat-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/nunito-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v=4">
+<link rel="stylesheet" href="/assets/css/site.css?v=5">
 <script>try{var p=JSON.parse(localStorage.getItem('gidm-a11y')||'{}');if(p.size)document.documentElement.dataset.size=p.size;if(p.contrast)document.documentElement.dataset.contrast='1';}catch(e){}</script>
 ${schemas.map(ld).join('\n')}
 </head>
@@ -106,14 +106,13 @@ function pageHeader(active) {
     <a class="brand" href="/" aria-label="Gehoor in die Moot – home">
       <img src="${e(image_url('logo_header'))}" alt="Gehoor in die Moot – Dr René Hornby audiologists / oudioloë" width="240" height="63" fetchpriority="high">
     </a>
-    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">${icon('menu', 26)}</button>
     <nav id="site-nav" class="site-nav" aria-label="Main">
       <ul>
-        <li class="only-menu"><a href="/"${active === 'home' ? ' aria-current="page"' : ''}>Home</a></li>
+        <li><a href="/"${active === 'home' ? ' aria-current="page"' : ''}>Home</a></li>
 ${navItems.map(([key, label, p]) => `        <li><a href="${e(url(p))}"${key === active ? ' aria-current="page"' : ''}>${e(label)}</a></li>`).join('\n')}
       </ul>
-      <a class="btn btn-primary nav-cta" href="/contact/#form" data-track="cta_click">Make an appointment</a>
     </nav>
+    <a class="btn btn-primary nav-cta" href="/contact/#form" data-track="cta_click">Make an appointment</a>
   </div>
 </header>
 <main id="main">
@@ -171,7 +170,7 @@ ${wa ? `  <a href="${e(wa)}" data-track="whatsapp_click">${icon('whatsapp', 22)}
     </div>
   </div>
 </div>
-<script src="/assets/js/site.js?v=4" defer></script>
+<script src="/assets/js/site.js?v=5" defer></script>
 </body>
 </html>
 `;
@@ -179,24 +178,26 @@ ${wa ? `  <a href="${e(wa)}" data-track="whatsapp_click">${icon('whatsapp', 22)}
 
 export function members_of() {
   const members = [
-    ['member_audiologysa', 'South African Association of Audiologists', 'Audiology SA', 'https://www.audiologysa.co.za'],
-    ['member_ican', 'iCAN – Independent Community of Audiologists', 'iCAN', 'https://ican.org.za'],
+    ['member_audiologysa', 'South African Association of Audiologists', 'saaa', 'https://www.audiologysa.co.za'],
+    ['member_ican', 'iCAN / Independent Connected Audiology Network', 'ican', 'https://ican.org.za'],
   ];
   return `<section class="section members" aria-labelledby="members-h">
   <div class="wrap">
     <p class="eyebrow">Lid van · Member of</p>
     <h2 id="members-h">Proud members of South Africa's audiology bodies</h2>
     <div class="members-grid">
-${members.map(([slot, name, short, href]) => {
+${members.map(([slot, name, key, href]) => {
     const src = image_url(slot);
     return `      <a class="member" href="${e(href)}" rel="noopener" target="_blank">
-        ${src ? `<img src="${e(src)}" alt="${e(image_alt(slot, name + ' logo'))}" loading="lazy">` : `<span class="member-badge" aria-hidden="true">${e(short)}</span>`}
+        ${src ? `<span class="member-logo member-logo-${key}" aria-hidden="true"><img src="${e(src)}" alt="" decoding="async" loading="lazy"></span>` : `<span class="member-badge" aria-hidden="true">${e(key.toUpperCase())}</span>`}
         <span class="member-name">${e(name)}</span>
       </a>`;
   }).join('\n')}
     </div>
   </div>
-</section>`;
+</section>
+
+`;
 }
 
 export function cta_band(title = 'Ready to hear better?', text = 'Send us a message and our friendly reception team will find a time that suits you.') {
@@ -228,7 +229,7 @@ export function page_hero(eyebrow, title, intro, slot, crumbs) {
           <span class="cta-alt">or call <a href="tel:${e(setting('phone_intl'))}" data-track="phone_click">${e(setting('phone'))}</a></span>
         </div>
       </div>
-      <div class="split-media">${slot_img(slot, 'rounded', title, false, '4 / 3')}</div>
+      ${(() => { const m = slot_img(slot, 'rounded', title, false, '4 / 3', { placeholder: false }); return m ? `<div class="split-media">${m}</div>` : ''; })()}
     </div>
   </div>
 </section>`;

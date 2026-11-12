@@ -186,6 +186,54 @@
     });
   }
 
+  /* ---------- Homepage photo slideshow (pauses on hover/focus, respects reduced motion) ---------- */
+  (function () {
+    var gallery = document.querySelector('[data-hero-slideshow]');
+    if (!gallery) return;
+    var photos = Array.prototype.slice.call(gallery.querySelectorAll('#ci-hero-photos img'));
+    var controls = gallery.querySelector('.ci-hero-controls');
+    if (photos.length < 2 || !controls) return;
+    var rotate = controls.querySelector('[data-rotate]');
+    var count = controls.querySelector('.ci-hero-count');
+    var status = controls.querySelector('[role="status"]');
+    var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var current = 0, playing = !motion.matches, hovering = false, timer;
+    function show(step, announce) {
+      photos[current].classList.remove('is-current');
+      photos[current].setAttribute('aria-hidden', 'true');
+      current = (current + step + photos.length) % photos.length;
+      var img = photos[current];
+      if (img.loading === 'lazy') img.loading = 'eager';
+      img.classList.add('is-current');
+      img.removeAttribute('aria-hidden');
+      count.textContent = (current + 1) + ' / ' + photos.length;
+      if (announce) status.textContent = 'Photo ' + (current + 1) + ' of ' + photos.length + '. ' + img.alt;
+    }
+    function schedule() {
+      clearInterval(timer);
+      if (playing && !hovering && !document.hidden) timer = setInterval(function () { show(1); }, 8000);
+    }
+    function setPlaying(v) {
+      playing = v;
+      rotate.setAttribute('aria-label', playing ? 'Pause slideshow' : 'Play slideshow');
+      controls.classList.toggle('is-paused', !playing);
+      schedule();
+    }
+    controls.querySelectorAll('[data-step]').forEach(function (b) {
+      b.addEventListener('click', function () { setPlaying(false); show(Number(b.getAttribute('data-step')), true); });
+    });
+    rotate.addEventListener('click', function () { setPlaying(!playing); });
+    gallery.addEventListener('focusin', function (ev) { try { if (ev.target.matches(':focus-visible')) setPlaying(false); } catch (e) {} });
+    gallery.addEventListener('pointerenter', function (ev) { if (ev.pointerType !== 'mouse') return; hovering = true; schedule(); });
+    gallery.addEventListener('pointerleave', function () { hovering = false; schedule(); });
+    if (motion.addEventListener) motion.addEventListener('change', function (ev) { if (ev.matches) setPlaying(false); });
+    document.addEventListener('visibilitychange', schedule);
+    // Load the other photos once the page has finished loading, so the first view stays fast.
+    window.addEventListener('load', function () { photos.forEach(function (img) { if (img.loading === 'lazy') img.loading = 'eager'; }); });
+    controls.hidden = false;
+    setPlaying(playing);
+  })();
+
   /* ---------- Yes/No self-checks ---------- */
   document.querySelectorAll('[data-quiz]').forEach(function (quiz) {
     var result = quiz.querySelector('.quiz-result');

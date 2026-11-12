@@ -1,6 +1,6 @@
 /** Template helpers shared by all pages. `ctx` is filled once per request by loadContext(). */
 import { readJSON } from './store.mjs';
-import { defaultSettings, practices as PRACTICES, imageSlots, seedTeam, seoPages, SITE_URL } from './content.mjs';
+import { defaultSettings, practices as PRACTICES, imageSlots, seedTeam, seoPages, SITE_URL, defaultPortraits } from './content.mjs';
 
 export const ctx = { settings: defaultSettings, seo: {}, team: seedTeam, images: {}, newsletters: [], origin: SITE_URL };
 
@@ -30,7 +30,7 @@ export function team(visibleOnly = true) {
   const t = ctx.team.filter((m) => !visibleOnly || m.visible);
   return [...t].sort((a, b) => (a.order || 0) - (b.order || 0));
 }
-export const team_photo_url = (m) => (m.photo ? media(m.photo) : '');
+export const team_photo_url = (m) => (m.photo ? media(m.photo) : (defaultPortraits[m.id] || ''));
 
 export function newsletters(publishedOnly = true) {
   return ctx.newsletters.filter((n) => !publishedOnly || n.published).sort((a, b) => String(b.date).localeCompare(String(a.date)));
@@ -52,19 +52,50 @@ export function image_url(slot) {
   if (d && d.file) return media(d.file);
   return imageSlots[slot]?.def || '';
 }
-export const image_alt = (slot, fallback = '') => (ctx.images[slot]?.alt || fallback);
+export const image_alt = (slot, fallback = '') => {
+  const d = ctx.images[slot];
+  if (d && d.file) return d.alt || fallback;
+  return imageSlots[slot]?.alt || fallback;
+};
+/** True when the slot shows the built-in CI image (not an upload). */
+const usesDefault = (slot) => !(ctx.images[slot] && ctx.images[slot].file);
 
-/** Image slot, or a soft branded placeholder until a photo is uploaded in the portal. */
-export function slot_img(slot, cls = '', fallbackAlt = '', lazy = true, ratio = '') {
+/**
+ * Image slot in a framed photo. Shows the uploaded photo, else the built-in CI photo,
+ * else a soft branded placeholder (or nothing when `placeholder` is false).
+ */
+export function slot_img(slot, cls = '', fallbackAlt = '', lazy = true, ratio = '', { placeholder = true } = {}) {
   const src = image_url(slot);
-  const style = ratio ? ` style="aspect-ratio:${e(ratio)}"` : '';
+  const def = imageSlots[slot] || {};
   if (!src) {
-    const label = imageSlots[slot]?.label || 'Photo';
-    return `<div class="img-ph ${e(cls)}"${style} role="img" aria-label="${e(fallbackAlt || label)}"><img src="/assets/img/logo-mark.png" alt="" width="90" height="113"></div>`;
+    if (!placeholder) return '';
+    const style = ratio ? ` style="aspect-ratio:${e(ratio)}"` : '';
+    return `<div class="img-ph ${e(cls)}"${style} role="img" aria-label="${e(fallbackAlt || def.label || 'Photo')}"><img src="/assets/img/logo-mark.png" alt="" width="90" height="113"></div>`;
   }
-  const d = ctx.images[slot] || {};
-  const dims = d.w && d.h ? ` width="${+d.w}" height="${+d.h}"` : '';
-  return `<img class="${e(cls)}" src="${e(src)}" alt="${e(image_alt(slot, fallbackAlt))}"${dims}${lazy ? ' loading="lazy" decoding="async"' : ' fetchpriority="high"'}${style}>`;
+  const alt = image_alt(slot, fallbackAlt);
+  const loading = lazy ? ' loading="lazy" decoding="async"' : ' decoding="async" fetchpriority="high"';
+  if (usesDefault(slot) && def.variant === 'brand') {
+    return `<div class="img-ph ${e(cls)} ci-protection-brand" style="aspect-ratio:${e(ratio || '4 / 3')}" role="img" aria-label="${e(alt)}"><img src="${e(src)}" alt=""${loading}></div>`;
+  }
+  const focus = usesDefault(slot) ? (def.focus || 'center') : 'center';
+  const extra = usesDefault(slot) && def.variant === 'newborn' ? ' class="ci-newborn-photo"' : '';
+  return `<div class="img-ph ${e(cls)} ci-photo" style="${ratio ? `aspect-ratio:${e(ratio)};` : ''}--ci-photo-focus:${e(focus)}" role="img" aria-label="${e(alt)}"><img src="${e(src)}" alt=""${loading}${extra}></div>`;
+}
+
+/** Plain image (practice photos), with its focus point. */
+export function slot_plain(slot, cls, fallbackAlt = '') {
+  const src = image_url(slot);
+  if (!src) return '';
+  const def = imageSlots[slot] || {};
+  const pos = usesDefault(slot) && def.focus ? ` style="object-position:${e(def.focus)}"` : '';
+  return `<img src="${e(src)}" alt="${e(image_alt(slot, fallbackAlt))}" loading="lazy" decoding="async"${pos} class="${e(cls)}">`;
+}
+
+/** Homepage slideshow photos: uploads or CI defaults, skipping any slot left empty. */
+export function hero_slides() {
+  return ['home_hero', 'home_hero_2', 'home_hero_3', 'home_hero_4']
+    .map((slot) => ({ slot, src: image_url(slot), alt: image_alt(slot, 'Gehoor in die Moot'), focus: usesDefault(slot) ? (imageSlots[slot]?.focus || 'center') : 'center' }))
+    .filter((x) => x.src);
 }
 
 export function seo_for(path) {

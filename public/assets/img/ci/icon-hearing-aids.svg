@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Hearing aids &amp; fittings</title>
+  <rect width="64" height="64" rx="16" fill="#8FC344"/>
+  <g transform="translate(14 14) scale(1.125)" fill="none" stroke="#142949" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+<path d="M8.7 19.6c-2.1-2.2-3.1-4.6-3.1-7.2 0-4.1 2.5-7.4 5.9-8.6 1.6-.5 3.4-.2 4.6 1l2.1 2.2-3.4 3.5-1.8-1.1c-1.2-.6-2.8.4-2.8 2.4 0 1.7.8 2.9 2 4.1 1.4 1.4 1.6 3.3.4 4.3-1 .8-2.6.7-3.9-.6Z"/>
+<path d="M17.8 7.3c4.7-1.5 8.7 2 8.7 6.3 0 3.9-3.5 4.4-3.5 7.4v1.2"/>
+<path d="M20.4 25.7a2.6 2.6 0 0 1 5.2 0v1.2h-5.2Z"/>
+  </g>
+</svg>

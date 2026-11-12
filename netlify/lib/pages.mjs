@@ -1,5 +1,5 @@
 /** Page templates. Each returns a complete HTML document. */
-import { e, url, absUrl, media, nl2br, setting, practices, team, team_photo_url, newsletters, format_date, whatsapp_link, icon, slot_img } from './helpers.mjs';
+import { e, url, absUrl, media, nl2br, setting, practices, team, team_photo_url, newsletters, format_date, whatsapp_link, icon, slot_img, slot_plain, hero_slides } from './helpers.mjs';
 import { practices as PRACTICES } from './content.mjs';
 import { pageHead, pageFooter, members_of, cta_band, page_hero } from './layout.mjs';
 
@@ -16,6 +16,8 @@ export function home() {
   const audiologists = team().filter((m) => m.group === 'audiologist');
   const latest = newsletters().slice(0, 3);
   const wa = whatsapp_link();
+  const slides = hero_slides();
+  const CI_ICONS = { test: 'icon-hearing-tests', child: 'icon-babies-children', heart: 'icon-newborn', wave: 'icon-tinnitus', ear: 'icon-hearing-aids', shield: 'icon-protection' };
   const services = [
     ['test', 'Hearing tests', 'Full diagnostic testing in a soundproof booth, with results explained the same day.', 'services/#hearing-tests'],
     ['child', 'Babies & children', 'Child-friendly testing from birth, school-readiness screening and follow-up.', 'babies-and-children/'],
@@ -41,9 +43,18 @@ export function home() {
         <li>${icon('check', 20)} Afrikaans &amp; English</li>
       </ul>
     </div>
-    <div class="hero-media">
-      ${slot_img('home_hero', 'rounded', 'Dr René Hornby with a patient at Gehoor in die Moot', false, '4 / 4.3')}
+    <div class="hero-media"${slides.length > 1 ? ' data-hero-slideshow' : ''}>
+${slides.length ? `      <div class="img-ph rounded ci-photo" style="aspect-ratio:4 / 4.3;--ci-photo-focus:${e(slides[0].focus)}" id="ci-hero-photos">
+${slides.map((sl, i) => `        <img src="${e(sl.src)}" alt="${e(sl.alt)}" decoding="async"${i ? ` loading="lazy" style="--ci-photo-focus:${e(sl.focus)}" aria-hidden="true"` : ' fetchpriority="high" class="is-current"'}>`).join('\n')}
+      </div>` : slot_img('home_hero', 'rounded', 'Gehoor in die Moot', false, '4 / 4.3')}
       <div class="badge-float"><strong>${new Date().getFullYear() - 1999}</strong><span>years caring for<br>Pretoria's hearing</span></div>
+${slides.length > 1 ? `      <div class="ci-hero-controls" role="group" aria-label="Homepage photo controls" hidden>
+        <button type="button" data-step="-1" aria-label="Previous photo" aria-controls="ci-hero-photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"></path></svg></button>
+        <span class="ci-hero-count" aria-hidden="true">1 / ${slides.length}</span>
+        <button type="button" data-step="1" aria-label="Next photo" aria-controls="ci-hero-photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"></path></svg></button>
+        <button type="button" data-rotate aria-label="Pause slideshow" aria-controls="ci-hero-photos"><svg class="ci-hero-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12m6-12v12"></path></svg><svg class="ci-hero-play" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6z"></path></svg></button>
+        <span class="sr-only" role="status"></span>
+      </div>` : ''}
     </div>
   </div>
 </section>
@@ -68,7 +79,7 @@ export function home() {
     <div class="grid">
 ${services.map(([ic, t, d, href]) => `
       <a class="card" href="${e(url(href))}">
-        <span class="icon-tile">${icon(ic, 28)}</span>
+        <span class="icon-tile ci-service-icon" aria-hidden="true"><img src="/assets/img/ci/${CI_ICONS[ic]}.svg" alt="" width="52" height="52"></span>
         <h3>${e(t)}</h3>
         <p>${e(d)}</p>
         <span class="more">Learn more ${icon('arrow', 18)}</span>
@@ -114,8 +125,8 @@ ${(audiologists.length) ? `
     </div>
     <div class="team-grid">
 ${audiologists.map((m) => { const ph = team_photo_url(m); return `
-      <article class="person">
-        ${ph ? '<img class="photo" src="' + e(ph) + '" alt="' + e(m.name) + '" loading="lazy">' : '<div class="photo img-ph" role="img" aria-label="' + e(m.name) + '"><img src="' + e(url('assets/img/logo-mark.png')) + '" alt=""></div>'}
+      <article class="person${ph ? ' ci-with-portrait' : ''}">
+        ${ph ? `<img src="${e(ph)}" alt="Portrait of ${e(m.name)}" loading="lazy" decoding="async" width="384" height="384" class="ci-team-portrait">` : ''}
         <div class="person-body">
           <h3>${e(m.name)}</h3>
           <p class="role">${e(m.role)}</p>
@@ -132,7 +143,7 @@ ${((m.hpcsa)) ? `          <p class="reg">HPCSA ${e(m.hpcsa)}</p>` : ''}
 <section class="section tint" aria-labelledby="club-h">
   <div class="wrap grid-2">
     <div class="panel navy">
-      <p class="eyebrow" style="color:#B9E38F">Battery Club</p>
+      <p class="eyebrow">Battery Club</p>
       <h2 id="club-h">Buy 5 packs of batteries, get the 6th free</h2>
       <p>Open to everyone, including people who aren't our patients. Ask at reception, or send us a message with your battery size.</p>
       <a class="text-link light" href="${e(url('contact/?subject=battery#form'))}">Join the Battery Club ${icon('arrow', 18)}</a>
@@ -174,6 +185,7 @@ ${latest.map((n) => `
     <div class="grid-2">
 ${practices().map((p) => `
       <div class="loc">
+        ${slot_plain(p.image, 'ci-practice-photo', p.name + ' practice')}
         <div class="loc-body">
           <h3>${e(p.name)}</h3>
           <p style="margin:0">${icon('pin', 18)} ${e(p.street)}, ${e(p.area)}, ${e(p.city)}, ${e(p.code)}</p>
@@ -366,8 +378,8 @@ export function about() {
     </div>
     <div class="team-grid">
 ${aud.map((m) => { const ph = team_photo_url(m); return `
-      <article class="person">
-        ${ph ? '<img class="photo" src="' + e(ph) + '" alt="' + e(m.name) + ', ' + e(m.role) + '" loading="lazy">' : '<div class="photo img-ph" role="img" aria-label="' + e(m.name) + '"><img src="' + e(url('assets/img/logo-mark.png')) + '" alt=""></div>'}
+      <article class="person${ph ? ' ci-with-portrait' : ''}">
+        ${ph ? `<img src="${e(ph)}" alt="Portrait of ${e(m.name)}" loading="lazy" decoding="async" width="384" height="384" class="ci-team-portrait">` : ''}
         <div class="person-body">
           <h3>${e(m.name)}</h3>
           <p class="role">${e(m.role)}</p>
@@ -414,12 +426,12 @@ export function hearingAids() {
     ["I'll only need them for special occasions", 'Your brain adapts best when you wear them every day, all day. Part-time wearing makes it harder to get used to them.'],
   ];
   const brands = [
-    ['Rexton', 'Reliable, affordable hearing aids, including water-resistant models.'],
-    ['Unitron', 'Natural sound and easy-to-use apps.'],
-    ['Widex', 'Known for exceptionally natural sound quality.'],
-    ['Signia', 'Rechargeable and Bluetooth options with smart features.'],
-    ['Cochlear & Baha', 'Implant and bone-conduction solutions for severe hearing loss.'],
-    ['Protec-Ear', 'Custom hearing protection and swim plugs.'],
+    ['Rexton', 'Reliable, affordable hearing aids, including water-resistant models.', 'rexton', 'png'],
+    ['Unitron', 'Natural sound and easy-to-use apps.', 'unitron', 'png'],
+    ['Widex', 'Known for exceptionally natural sound quality.', 'widex', 'png'],
+    ['Signia', 'Rechargeable and Bluetooth options with smart features.', 'signia', 'jpg'],
+    ['Cochlear & Baha', 'Implant and bone-conduction solutions for severe hearing loss.', 'cochlear-baha', 'jpg'],
+    ['Protec-Ear', 'Custom hearing protection and swim plugs.', 'protec-ear', 'png'],
   ];
   return page({ path: 'hearing-aids/', breadcrumbs: [['Hearing aids', 'hearing-aids/']], schema: [faqLd(myths, 'Myth: ')] }, 'hearing-aids', `${page_hero('Gehoorapparate · Hearing aids', 'Hearing aids, chosen around your life',
     'As an independent practice we fit several leading brands, so we can recommend what suits your hearing, your lifestyle and your budget, not what one company wants sold.',
@@ -466,8 +478,8 @@ export function hearingAids() {
       <h2 id="brands-h">Brands we fit and support</h2>
     </div>
     <div class="grid">
-${brands.map(([b, d]) => `
-      <div class="card"><h3>${e(b)}</h3><p>${e(d)}</p></div>
+${brands.map(([b, d, logo, ext]) => `
+      <div class="card"><div class="ci-brand-mark ci-brand-mark-${logo.split('-')[0]}" aria-hidden="true"><img src="/assets/img/ci/brand-${logo}.${ext}" alt="" loading="lazy" decoding="async"></div><h3>${e(b)}</h3><p>${e(d)}</p></div>
 `).join('')}
     </div>
   </div>
@@ -935,7 +947,7 @@ ${Object.entries(TOPICS).map(([k, v]) => `              <option value="${e(v)}"$
     <h2 id="loc-h">Our practices</h2>
     <div class="grid-2">
 ${practices().map((p) => `      <div class="loc">
-        ${slot_img(p.image, '', p.name + ' practice entrance', true, '16 / 9').startsWith('<img') ? slot_img(p.image, '', p.name + ' practice entrance', true, '16 / 9') : ''}
+        ${slot_plain(p.image, 'ci-practice-photo', p.name + ' practice')}
         <div class="map-slot" data-map-src="${e(p.embed)}" data-map-title="Map of the ${e(p.name)} practice">
           <p>Google Maps sets its own cookies, so the map loads only with your permission.</p>
           <button type="button" class="btn btn-outline" data-map-load>Show the map</button>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Babies &amp; children</title>
+  <rect width="64" height="64" rx="16" fill="#8FC344"/>
+  <g transform="translate(14 14) scale(1.125)" fill="none" stroke="#142949" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="10.5" cy="8.5" r="4"/>
+<path d="M3.4 25.6v-3a7.1 7.1 0 0 1 11.2-5.8"/>
+<circle cx="22.5" cy="12.5" r="3.5"/>
+<path d="M16.5 26v-2a6 6 0 0 1 12 0v2M7.4 25.6v-2.2"/>
+  </g>
+</svg>

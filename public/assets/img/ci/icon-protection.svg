@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Ear protection &amp; swim plugs</title>
+  <rect width="64" height="64" rx="16" fill="#8FC344"/>
+  <g transform="translate(14 14) scale(1.125)" fill="none" stroke="#142949" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+<path d="M16 3.7c4.1 2.6 7.5 3.5 11 3.9v8c0 5.8-4.2 10.1-11 13-6.8-2.9-11-7.2-11-13v-8c3.5-.4 6.9-1.3 11-3.9Z"/>
+<path d="M16 12.2c-2 0-3.4 1.1-3.4 3.1v4c0 1.3 1 2.3 2.3 2.3h2.2c1.3 0 2.3-1 2.3-2.3v-4c0-2-1.4-3.1-3.4-3.1Z"/>
+<path d="M12.6 17.8h6.8"/>
+  </g>
+</svg>

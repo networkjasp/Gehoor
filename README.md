@@ -78,6 +78,7 @@ Google Analytics, Search Console, WhatsApp, phone numbers and similar details ar
   - Protection against cross-site requests.
   - Uploads are checked by their actual file contents, not the file name, and served from a sandbox.
   - No plain-text passwords in the code: only the hash of the starting password, which is replaced at the first password change.
+- **Design:** the approved CI mock-up: CI colours (navy #142949, blue #3256A3, green #8FC344), practice photos, a homepage photo slideshow, team portraits, member and brand logos, and green service icons. All photos are defaults: replace any of them in *Portal › Images* or *Portal › Team*.
 - **Accessibility and speed:** WCAG 2.2 AA contrast, a high-contrast mode and text size buttons, and self-hosted fonts. Images are compressed to WebP in the browser before upload. Lighthouse scores 99–100.
 
 ## Folder map

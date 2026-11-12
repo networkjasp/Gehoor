@@ -18,7 +18,7 @@ const api = (await import('../netlify/functions/api.mjs')).default;
 const media = (await import('../netlify/functions/media.mjs')).default;
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.jpg': 'image/jpeg',
-  '.webp': 'image/webp', '.ico': 'image/x-icon', '.woff2': 'font/woff2', '.webmanifest': 'application/manifest+json', '.txt': 'text/plain' };
+  '.webp': 'image/webp', '.ico': 'image/x-icon', '.woff2': 'font/woff2', '.webmanifest': 'application/manifest+json', '.txt': 'text/plain', '.svg': 'image/svg+xml', '.pdf': 'application/pdf', '.json': 'application/json' };
 
 async function staticFile(p) {
   let file = path.join(root, 'public', decodeURIComponent(p));
